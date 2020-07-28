@@ -30,15 +30,14 @@ public class TestBase {
 		public ExtentReports extent;
 		public ExtentTest testlogger;
 		public WebDriver driver;
-
+		String pageName="DownloadPageTest";
+		String uname="Ashwini";
 		@BeforeTest
 		public ExtentReports setReport(){
 
 			htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir") + "/test-output/DownloadPageExtentReport.html");
 			extent = new ExtentReports();
-			
 			extent.attachReporter(htmlReporter);
-			
 			extent.setSystemInfo("Host Name", "Offline Website");
 			extent.setSystemInfo("Environment", "Download Page Testing");
 			extent.setSystemInfo("User Name", "AshwiniD");
@@ -69,24 +68,23 @@ public class TestBase {
 			driver.manage().window().maximize();
 			dp = new DownloadPage(driver);
 			dp.navigateToDownloadPage();
-			//return driver;
 		}
-		@Test
-		 public void passTest(String testName,String msg)
+		
+		public void passTest(String testName,String pageName)
 		 {
-		        testlogger = extent.createTest(testName,msg);
+		        testlogger = extent.createTest(testName,pageName);
 		        Assert.assertTrue(true);
 		 }
-		@Test
-		 public void failTest(String testName,String msg)
+		
+		 public void failTest(String testName,String pageName)
 		 {
-		        testlogger = extent.createTest("testName", "msg");
+		        testlogger = extent.createTest(testName,pageName);
 		        Assert.assertFalse(false);
 		 }
-		@Test
+		
 		 public void skipTest(String testName)
 		 {
-		        testlogger = extent.createTest("testName");
+		        testlogger = extent.createTest(testName);
 		        throw new SkipException("Skipping this test with exception");
 		 }
 		    

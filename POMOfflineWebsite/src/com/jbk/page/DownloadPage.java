@@ -3,20 +3,24 @@ package com.jbk.page;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
 
-public class DownloadPage {
+public class DownloadPage   {
 	WebDriver wd = null;
 	DownloadPage dp = null;
-
+	ExtentTest test1=null;
 	public DownloadPage(WebDriver wd) {
 		this.wd = wd;
 		PageFactory.initElements(wd, this);
 	}
+	Logger logger=Logger.getLogger(this.getClass());
 
 	@FindBy(id = "email")
 	private WebElement username;
@@ -72,145 +76,160 @@ public class DownloadPage {
 		downloads.click();
 	}
 
-	public boolean checkTotalRowColNum() {
+	public boolean checkTotalRowColNum(ExtentTest logger2) {
+		
+		logger2.log(Status.INFO, "Finding number of rows and columns:");
 		List<WebElement> listOfCol = tableColumn;
-		System.out.println("num of column" + listOfCol.size());
+		logger2.log(Status.INFO,"num of column" +listOfCol.size());
 		List<WebElement> listOfRows = tableRow;
-		System.out.println("num of rows" + listOfRows.size());
+		logger2.log(Status.INFO,"num of rows" +listOfRows.size());
 		if (listOfCol.size() != listOfRows.size()) {
+			logger.info("The size of rows and coloumns not same.");
 			return true;
 		}
 		return false;
 	}
 
-	public boolean validateHeaderCount() {
+	public boolean validateHeaderCount(ExtentTest logger2) {
+		//test1.log(Status.PASS, "asd");
+		logger2.log(Status.INFO, "Finding list of headers");
 		List<WebElement> listOfHeader = header.findElements(By.tagName("th"));
-		System.out.println("Total no of headers::" + listOfHeader.size());
-		if (listOfHeader.size() == 8) {
+		logger2.log(Status.INFO, "Header list finding completed ");
+		logger2.log(Status.INFO,"Total no of headers::" +listOfHeader.size());
+		
+		if (listOfHeader.size()==8) {
+			logger2.log(Status.PASS, "Header size is matched");
 			return true;
 		} else {
+			logger2.log(Status.FAIL, "Header size is not matched");
 			return false;
 		}
 	}
 
-	public boolean checkFollowVender() {
+	public boolean checkFollowVender(ExtentTest logger2) {
+		logger2.log(Status.INFO, "Checking Following Vendor of Selenium ");
 		String actVendor = tableCell.getText();
+		logger2.log(Status.INFO, "Following Vendor of Selenium "+actVendor);
 		String expVendor = "Google Chrome";
+		logger2.log(Status.INFO, "Expected Following Vendor of Selenium is"+expVendor);
 		if (actVendor.equals(expVendor)) {
-			System.out.println("Below Source Vendor.." + actVendor);
+			logger2.log(Status.PASS,"Source Vendor match with expected vendor.." + actVendor);
 			return true;
 		} else {
+			logger2.log(Status.FAIL,"Source Vendor not match with expected vendor.." + actVendor);
 			return false;
 		}
 
 	}
 
-	public boolean checkLink32bitClickable() {
-		System.out.println("32bit link click()...");
+	public boolean checkLink32bitClickable(ExtentTest logger2) {
+		logger2.log(Status.INFO, "Validate 32bit link click or not");
 		try {
 			bit32Link.click();
+			logger2.log(Status.PASS,"32bit link is clickable");
 			return true;
 		} catch (Throwable t) {
+			logger2.log(Status.FAIL,"32bit link is not clickable");
 			return false;
 		}
 	}
 
-	public boolean checkLink64bitClickable() {
-		System.out.println("64bit link click()...");
+	public boolean checkLink64bitClickable(ExtentTest logger2) {
+		logger2.log(Status.INFO, "Validate 64bit link click or not");
 		try {
 			bit64Link.click();
+			logger2.log(Status.PASS,"64bit link is clickable");
 			return true;
 		} catch (Throwable t) {
-			System.out.println("exception");
+			logger2.log(Status.FAIL,"64Bit link not click suceefully..");
 			return false;
 		}
 	}
 
-	public boolean checkOfficialWebsiteClickable() {
-		System.out.println("Official Website link click()...");
+	public boolean checkOfficialWebsiteClickable(ExtentTest logger2) {
+		logger2.log(Status.INFO,"Official Website link click()...");
 		try {
 			officialWebsiteLink.click();
+			logger2.log(Status.PASS,"Official Website link click..");
 			return true;
 		} catch (Throwable t) {
+			logger2.log(Status.FAIL,"Official Website link not click suceefully..");
 			return false;
 		}
 	}
 
-	public boolean checkVendorListIsSort() {
+	public boolean checkVendorListIsSort(ExtentTest logger2) {
+		logger2.log(Status.INFO,"Validate Is vendor name list sorted");
 		ArrayList<String> actualWebList = new ArrayList<>();
 		List<WebElement> elementList = tableVendorsList;
+		logger2.log(Status.INFO,"Actul list of Vendor Sequence..");
 		for (WebElement we : elementList) {
 			actualWebList.add(we.getText());
 		}
-		System.out.println(actualWebList);
+		logger2.log(Status.INFO,"Actul list of Vendor Name.."+actualWebList);
 		ArrayList<String> sortedList = new ArrayList<>();
 		for (String s : actualWebList) {
 			sortedList.add(s);
 		}
 		Collections.sort(sortedList);
+		logger2.log(Status.INFO,"Sorted actul list of Vendor Name..");
 		if (sortedList.equals(actualWebList)) {
-			System.out.println("Vendor List is sorted.." + sortedList);
+			logger2.log(Status.PASS,"Vendor List is sorted.." + sortedList);
 			return true;
 		} else {
-			System.out.println("Vendor List is not sorted.." + sortedList);
-			System.out.println(sortedList);
+			logger2.log(Status.FAIL,"Vendor unsorted List after sorting.." + sortedList);
+			logger.debug(sortedList);
 			return false;
 		}
 	}
 
-	public boolean checkSrNumberListInSort() {
+	public boolean checkSrNumberListInSort(ExtentTest logger2) {
+		logger2.log(Status.INFO,"Validate Is Sr. numbers list sorted");
 		ArrayList<String> actualSrNumList = new ArrayList<>();
 		List<WebElement> elementList = tableSrNumbers;
+		logger2.log(Status.INFO,"Actul list of Sr. numbers Sequence..");
 		for (WebElement we : elementList) {
 			actualSrNumList.add(we.getText());
 		}
-		System.out.println(actualSrNumList);
+		logger.debug(actualSrNumList);
+		logger2.log(Status.INFO,"Actul list of Sr. numbers.."+actualSrNumList);
 		ArrayList<String> sortedList = new ArrayList<>();
 		for (String s : actualSrNumList) {
 			sortedList.add(s);
 		}
 		Collections.sort(sortedList);
+		logger2.log(Status.INFO,"Sorted actul list of Vendor Name..");
 		if (sortedList.equals(actualSrNumList)) {
-			System.out.println("List is sorted" + sortedList);
+			logger2.log(Status.PASS,"List is sorted" + sortedList);
 			return true;
 		} else {
-			System.out.println("List is not sorted" + sortedList);
+			logger2.log(Status.FAIL,"List is not sorted" + sortedList);
 			return false;
 		}
 	}
 
-	public boolean checkVendorStartWith() {
-
+	public boolean checkVendorStartWith(ExtentTest logger2) {
+		logger2.log(Status.INFO,"Validate Is vendor name start with Google");
 		ArrayList<String> actualVendorList = new ArrayList<>();
 		List<WebElement> elementList = tableVendorsList;
+		logger2.log(Status.INFO,"Actul list of Vendors..");
 		for (WebElement we : elementList) {
 			actualVendorList.add(we.getText());
 		}
-		System.out.println(actualVendorList);
+		logger.debug(actualVendorList);
+		logger2.log(Status.INFO,"Actul list of Sr. numbers.."+actualVendorList);
 		ArrayList<String> matchList = new ArrayList<>();
 		boolean status = true;
 
 		for (String vendor : actualVendorList) {
 			status = vendor.startsWith("Google");
-			System.out.println(status);
+			logger.debug(status);
 			if (status == true) {
-				System.out.println(" Vendor name Starts with Google..");
+				logger2.log(Status.PASS," Vendor name Starts with Google..");
 				matchList.add("status");
-				System.out.println(matchList.size());
+				logger2.log(Status.INFO,"Size of vendors list."+matchList.size());
 			}
 		}
 		return true;
 	}
-	/*
-	 * ArrayList<String> actualWebList = new ArrayList<>(); ArrayList<String>
-	 * sortedList = new ArrayList<>(); public void checkSort(){
-	 * //ArrayList<String> actualWebList = new ArrayList<>(); List<WebElement>
-	 * elementList = tableVendorsList; for (WebElement we : elementList) {
-	 * actualWebList.add(we.getText()); } System.out.println(actualWebList);
-	 * //ArrayList<String> sortedList = new ArrayList<>(); for (String s :
-	 * actualWebList) { sortedList.add(s); } Collections.sort(sortedList);
-	 * System.out.println(sortedList);
-	 * 
-	 * }
-	 */
 }
